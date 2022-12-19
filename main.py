@@ -12,11 +12,13 @@ tab_control = ttk.Notebook(window)
 # первая вкладка тип анализа
 tab1 = ttk.Frame(tab_control)
 tab_control.add(tab1, text='Тип расчета')
+
 # текст 1 вкладки
 lbl_1 = Label(tab1, text="Тип анализа", font=("Arial Bold", 15), padx=5, pady=5)
 lbl_2 = Label(tab1, text="Тип градуировки", font=("Arial Bold", 15), padx=5, pady=5)
 lbl_1.grid(column=0, row=0)
 lbl_2.grid(column=1, row=0)
+
 # чеккнопки
 # переменная Tkinter
 chk_state_1 = BooleanVar()
@@ -37,13 +39,14 @@ Radiobutton(tab1, text='Массовая доля в растворе', var=chk_
 Radiobutton(tab1, text='Градуировка из навески', var=chk_state_2, value=0).grid(column=1, row=1)
 Radiobutton(tab1, text='Градуировка из раствора', var=chk_state_2, value=1).grid(column=1, row=2)
 
-
 # вторая вкладка ввод данных
 tab2 = ttk.Frame(tab_control)
-tab_control.add(tab2, text='Ввод данных')
+tab_control.add(tab2, text='Ввод данных градуировка')
+
 # текст 2 вкладки
-lbl = Label(tab2, text="Ввод первичных данных по пробам и градуировке", font=("Arial Bold", 15))
-lbl.place(relx=0.05, rely=0.05)
+Label(tab2, text="Ввод первичных данных по градуировке", font=("Arial Bold", 15)).place(relx=0.05, rely=0.05)
+Label(tab2, text="Введите количество анализируемых элементов", font=("Arial Bold", 10)).place(relx=0.05, rely=0.15)
+Label(tab2, text="Введите количество градуировочных растворов", font=("Arial Bold", 10)).place(relx=0.05, rely=0.21)
 
 # програмка для кол-ва полей n
 def pole_n(event):
@@ -52,16 +55,16 @@ def pole_n(event):
     for i in range(n_pole):
         ttk.Entry().pack()
 
-
 # выпадающий список
 number = [1,2,3,4,5,6,7,8,9,10]
 
-combobox = ttk.Combobox(tab2,  values=number)
-combobox.grid(column=0, row=2)
+combobox_1 = ttk.Combobox(tab2,  values=number)
+combobox_1.place(relx=0.45, rely=0.15)
 
-combobox.bind("<<ComboboxSelected>>", pole_n)
+combobox_2 = ttk.Combobox(tab2,  values=number)
+combobox_2.place(relx=0.45, rely=0.22)
 
-
+combobox_1.bind("<<ComboboxSelected>>", pole_n)
 
 # третья вкладка настройки
 tab3 = ttk.Frame(tab_control)
@@ -76,9 +79,6 @@ tab_control.add(tab3, text='Результаты')
 # текст 4 вкладки
 lbl = Label(tab3, text="Результаты рассчета неопределенности", font=("Arial Bold", 15))
 lbl.grid(column=0, row=0)
-
-
-
 
 tab_control.pack(expand=1, fill='both')
 window.mainloop()
