@@ -1,11 +1,18 @@
 from tkinter import *
 from tkinter import ttk
+
 from tkinter.ttk import Checkbutton
+
+"""
+- добавить возможность построения графиков с расчетом корелляции
+"""
+
 
 # начальное окно
 window = Tk()
 window.title("Рассчет неопределенности ММК")
-window.geometry('800x500')
+window.geometry('1000x500')
+#window.geometry("%dx%d" % (500, 300))
 
 tab_control = ttk.Notebook(window)
 
@@ -58,12 +65,18 @@ def pole_n():
     """
     програмка для кол-ва полей (в разработке)
     """
-    global lab_el # создаем глобальную переменную для названия таблички массовой доли
-    lab_el = Label(tab2, text="Массовая доля", font=("Arial Bold", 10))
-    lab_el.place(relx=0.05, rely=0.31)
 
-    num_std = int(combobox_1.get())
-    num_el = int(combobox_2.get())
+    try:
+        pole_n_del()
+
+    except: pass
+
+    global name_table # создаем глобальную переменную для названия таблички массовой доли
+    name_table = Label(tab2, text="Массовая доля", font=("Arial Bold", 10))
+    name_table.place(relx=0.05, rely=0.31)
+
+    num_el = int(combobox_1.get())
+    num_std = int(combobox_2.get())
 
     dob_0 = 0 # горизонтальный пропуск
 
@@ -85,7 +98,7 @@ def pole_n():
                 globals()['lbl_std' + str(i)].place(relx=0.05, rely=0.375+dob_1)
 
             if 'lbl_ent' + str(e) + str(i) not in globals():
-                globals()['lbl_ent' + str(e) + str(i)] = ttk.Entry()
+                globals()['lbl_ent' + str(e) + str(i)] = ttk.Entry(tab2)
                 globals()['lbl_ent' + str(e) + str(i)].place(relx=0.05+dob_0, rely=0.40+dob_2)
 
             dob_1 += 0.045
@@ -100,17 +113,30 @@ def pole_n_del():
     num_std = int(combobox_1.get())
     num_el = int(combobox_2.get())
 
-    for e in range(num_el):
+    name_table.destroy()
 
-        globals()['lbl_el' + str(e)].destroy()
+    for e in range(10):
 
-        for i in range(num_std):
+        if 'lbl_el' + str(e) in globals():
+
+            globals()['lbl_el' + str(e)].destroy()
+            try:
+                del globals()['lbl_std' + str(i)]
+            except: pass
+
+        for i in range(10):
 
             if 'lbl_std' + str(i) in globals():
                 globals()['lbl_std' + str(i)].destroy()
+                try:
+                    del globals()['lbl_std' + str(i)]
+                except: pass
 
             if 'lbl_ent' + str(e) + str(i) in globals():
                 globals()['lbl_ent' + str(e) + str(i)].destroy()
+                try:
+                    del globals()['lbl_ent' + str(e) + str(i)]
+                except: pass
 
 
 
