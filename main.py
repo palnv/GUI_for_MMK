@@ -173,7 +173,7 @@ def pole_n_del():
         if 'lbl_el_m_d' + str(e) in globals():
             globals()['lbl_el_m_d' + str(e)].destroy()
             try:
-                del globals()['lbl_std_m_d' + str(e)]
+                del globals()['lbl_el_m_d' + str(i)] # неясно почему c "i" работает, а с "e" нет
             except: pass
 
         # if 'lbl_el_imp' + str(e) in globals():
