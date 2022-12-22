@@ -1,9 +1,11 @@
 from tkinter import *
 from tkinter import ttk
 
+
 from tkinter.ttk import Checkbutton
 
 """
+- решить проблему рамок
 - добавить возможность построения графиков с расчетом корелляции
 """
 
