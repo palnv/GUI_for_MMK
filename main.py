@@ -121,8 +121,6 @@ def pole_n():
     gap_0 = 0  # обнулим
 
     gap_1_itog_md = gap_1  # запомним размеры таблички массовой доли по вертикали
-    gap_1 = 0  # обнулим
-
 
     """
     табличка добавления импульсов
@@ -132,27 +130,29 @@ def pole_n():
     name_table_impuls = Label(tab2, text="Импульсы (cps)", font=("Arial Bold", 10))
     name_table_impuls.place(x=10, y=gap_1_itog_md + 250) # отталкиваемся от размеров предыдущей таблички
 
-    # for e in range(num_el):
-    #
-    #     globals()['lbl_el_imp' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
-    #     globals()['lbl_el_imp' + str(e)].place(x=180+gap_0, y=gap_1_itog_md + 180)
-    #
-    #     gap_0 += 130
-    #
-    #     for i in range(num_std):
-    #
-    #         # создание таблички со стандартами
-    #         if 'lbl_std' + str(i) not in globals():
-    #             globals()['lbl_std_imp' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
-    #             globals()['lbl_std_imp' + str(i)].place(x=40, y=gap_1_itog_md + 200+gap_1)
-    #
-    #         if 'lbl_ent' + str(e) + str(i) not in globals():
-    #             globals()['lbl_ent_imp' + str(e) + str(i)] = ttk.Entry(tab2)
-    #             globals()['lbl_ent_imp' + str(e) + str(i)].place(x=10+gap_0, y=gap_1_itog_md + 200+gap_1)
-    #
-    #         gap_1 += 23
+    for e in range(num_el):
 
+        globals()['lbl_el_imp' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
+        globals()['lbl_el_imp' + str(e)].place(x=180+gap_0, y=gap_1_itog_md + 280)
 
+        gap_0 += 130
+
+        gap_3 = 0  # вертикальный пропуск для таблички массовой доли
+
+        for i in range(num_std):
+
+            # создание таблички со стандартами
+            if 'lbl_std_imp' + str(i) not in globals():
+                globals()['lbl_std_imp' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
+                globals()['lbl_std_imp' + str(i)].place(x=40, y=gap_1_itog_md + 300+gap_3)
+
+            if 'lbl_ent_imp' + str(e) + str(i) not in globals():
+                globals()['lbl_ent_imp' + str(e) + str(i)] = ttk.Entry(tab2)
+                globals()['lbl_ent_imp' + str(e) + str(i)].place(x=10+gap_0, y=gap_1_itog_md + 300+gap_3)
+
+            gap_3 += 23
+
+    gap_3_itog_imp = gap_1_itog_md + gap_3 # запомним размеры таблички массовой доли и импульсов по вертикали
 
 
 
@@ -170,20 +170,23 @@ def pole_n_del():
 
     for e in range(10):
 
+        # удаление названия столбцов - элементов таблички массовая доля
         if 'lbl_el_m_d' + str(e) in globals():
             globals()['lbl_el_m_d' + str(e)].destroy()
             try:
-                del globals()['lbl_el_m_d' + str(i)] # неясно почему c "i" работает, а с "e" нет
+                del globals()['lbl_el_m_d' + str(e)] # неясно почему c "i" работает, а с "e" нет
             except: pass
 
-        # if 'lbl_el_imp' + str(e) in globals():
-        #     globals()['lbl_el_imp' + str(e)].destroy()
-        #     try:
-        #         del globals()['lbl_std_imp' + str(e)]
-        #     except: pass
+        # удаление названия столбцов - элементов таблички с импульсами
+        if 'lbl_el_imp' + str(e) in globals():
+            globals()['lbl_el_imp' + str(e)].destroy()
+            try:
+                del globals()['lbl_el_imp' + str(e)]
+            except: pass
 
         for i in range(10):
 
+            # удаление таблички массовая доля
             if 'lbl_std_m_d' + str(i) in globals():
                 globals()['lbl_std_m_d' + str(i)].destroy()
                 try:
@@ -194,6 +197,19 @@ def pole_n_del():
                 globals()['lbl_ent_m_d' + str(e) + str(i)].destroy()
                 try:
                     del globals()['lbl_ent_m_d' + str(e) + str(i)]
+                except: pass
+
+            # удаление таблички импульсы
+            if 'lbl_std_imp' + str(i) in globals():
+                globals()['lbl_std_imp' + str(i)].destroy()
+                try:
+                    del globals()['lbl_std_imp' + str(i)]
+                except: pass
+
+            if 'lbl_ent_imp' + str(e) + str(i) in globals():
+                globals()['lbl_ent_imp' + str(e) + str(i)].destroy()
+                try:
+                    del globals()['lbl_ent_imp' + str(e) + str(i)]
                 except: pass
 
     # удаляем табличку импульсов
