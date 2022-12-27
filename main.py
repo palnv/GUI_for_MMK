@@ -7,11 +7,10 @@ from tkinter.ttk import Checkbutton
 - добавить возможность построения графиков с расчетом корелляции
 """
 
-
 # начальное окно
 window = Tk()
 window.title("Рассчет неопределенности ММК")
-window.geometry('1500x800')
+window.geometry('1400x800')
 #window.geometry("%dx%d" % (500, 300))
 
 tab_control = ttk.Notebook(window)
@@ -45,8 +44,6 @@ Radiobutton(tab1, text='Массовая доля в навеске', var=chk_st
 Radiobutton(tab1, text='Массовая доля в растворе', var=chk_state_1, value=1).grid(column=0, row=2)
 Radiobutton(tab1, text='Градуировка из навески', var=chk_state_2, value=0).grid(column=1, row=1)
 Radiobutton(tab1, text='Градуировка из раствора', var=chk_state_2, value=1).grid(column=1, row=2)
-
-
 
 
 # вторая вкладка ввод данных
@@ -124,7 +121,6 @@ def pole_n():
     gap_1 = 0
 
 
-
     """
     табличка добавления сигнал прибора (импульсы)
     """
@@ -156,8 +152,6 @@ def pole_n():
 
     gap_0 = 0
     gap_1 = 0
-
-
 
 
     """
@@ -223,6 +217,60 @@ def pole_n():
             gap_3 += 23
 
 
+    """
+    табличка растворения ГСО (перевода в пробирки)
+    """
+
+
+    global name_table_probirka  # название таблички
+    name_table_probirka = Label(tab2, text="Растворение ГСО", font=("Arial Bold", 10))
+    name_table_probirka.place(x=10, y=gap_3_itog_razb + 280)
+
+    gap_6 = 0
+
+    # названия колонок
+    name_all_columns_probirka = {'m_пробирк,г', 'm_навеск,мг', 'm_итог,г'}
+
+    for e in range(num_el):
+
+        gap_5 = 0
+        gap_3 = 0
+
+        for h in name_all_columns_probirka:
+            if h + str(e) not in globals():
+                globals()[h + str(e)] = Label(tab2, text=h, font=("Arial Bold", 7))
+                globals()[h + str(e)].place(x=120 + gap_6 + gap_5, y=gap_3_itog_razb + 320)
+
+            gap_3_2 = 0
+
+            for i in range(num_std):
+
+                if 'lbl_ent_probirka' + str(e) + str(i) + str(h) not in globals():
+                    globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)] = ttk.Entry(tab2, width=10)
+                    globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)].place(x=120 + gap_6 + gap_5,
+                                                                     y=gap_3_itog_razb + 340 + gap_3_2)
+                gap_3_2 += 23
+
+            gap_5 += 70
+            gap_3 += 23
+
+        if 'lbl_el_probirk' + str(e) not in globals():
+            globals()['lbl_el_probirk' + str(e)] = Label(tab2, text=f'Растворение_элемент_{e + 1}', font=("Arial Bold", 8))
+            globals()['lbl_el_probirk' + str(e)].place(x=150 + gap_6, y=gap_3_itog_razb + 300)
+
+        gap_3 = 0
+
+        for i in range(num_std):
+
+            if 'lbl_std_probirka' + str(i) not in globals():
+                globals()['lbl_std_probirka' + str(i)] = Label(tab2, text=f'Стандарт_{i + 1}', font=("Arial Bold", 8))
+                globals()['lbl_std_probirka' + str(i)].place(x=40 + gap_6, y=gap_3_itog_razb + 340 + gap_3)
+
+            gap_3 += 23
+
+        gap_6 += 250
+
+    print(gap_6)
 
 
 def pole_n_del():
@@ -231,11 +279,21 @@ def pole_n_del():
     програмка для удаления  полей (в разработке)
     """
 
-    # удаляем табличку массовой доли
+    # удаляем таблички
+
     name_table_mass_dol.destroy()
+
     name_table_razb.destroy()
+
     name_table_imp.destroy()
+
     name_table_rsd.destroy()
+
+    # названия колонок
+    name_table_probirka.destroy()
+
+    # названия колонок перевода в пробирки
+    name_all_columns_probirka = {'m_пробирк,г', 'm_навеск,мг', 'm_итог,г'}
 
     for e in range(10):
 
@@ -268,6 +326,44 @@ def pole_n_del():
                 del globals()['lbl_el_rsd' + str(e)]
             except:
                 pass
+
+        # удаление названия минитабличек по растворению
+        if 'lbl_el_probirk' + str(e) in globals():
+            globals()['lbl_el_probirk' + str(e)].destroy()
+            try:
+                del globals()['lbl_el_probirk' + str(e)]
+            except:
+                pass
+
+
+
+        for h in name_all_columns_probirka:
+
+            if h + str(e) in globals():
+                globals()[h + str(e)].destroy()
+                try:
+                    del globals()[h + str(e)]
+                except:
+                    pass
+
+
+        for h in name_all_columns_probirka:
+
+            if 'lbl_ent_probirka' + str(e) + str(h) in globals():
+                globals()['lbl_ent_probirka' + str(e) + str(h)].destroy()
+                try:
+                    del globals()['lbl_ent_probirka' + str(e) + str(h)]
+                except:
+                    pass
+
+            for i in range(10):
+                if 'lbl_ent_probirka' + str(e) + str(i) + str(h) in globals():
+                    globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)].destroy()
+                    try:
+                        del globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)]
+                    except:
+                        pass
+
 
 
         for i in range(10):
@@ -325,6 +421,15 @@ def pole_n_del():
                 globals()['lbl_ent_rsd' + str(e) + str(i)].destroy()
                 try:
                     del globals()['lbl_ent_rsd' + str(e) + str(i)]
+                except:
+                    pass
+
+            # удаление таблички растворения ГСО
+
+            if 'lbl_std_probirka' + str(i) in globals():
+                globals()['lbl_std_probirka' + str(i)].destroy()
+                try:
+                    del globals()['lbl_std_probirka' + str(i)]
                 except:
                     pass
 
