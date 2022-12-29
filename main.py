@@ -33,7 +33,7 @@ chk_state_2 = BooleanVar()
 chk_state_1.set(False)
 chk_state_2.set(False)
 
-# галочки (тут не подходят)
+# галочки
 # chk_1 = Checkbutton(tab1, text='Массовая доля в навеске', var=chk_state_1)
 # chk_2 = Checkbutton(tab1, text='Массовая доля в растворе', var=chk_state_2)
 # chk_3 = Checkbutton(tab1, text='Градуировка из навески', var=chk_state_3)
