@@ -270,9 +270,6 @@ def pole_n():
 
         gap_6 += 250
 
-    print(gap_6)
-
-
 def pole_n_del():
 
     """
