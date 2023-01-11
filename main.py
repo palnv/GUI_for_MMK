@@ -3,6 +3,8 @@ from tkinter import ttk
 
 from tkinter.ttk import Checkbutton
 
+
+
 """
 - добавить возможность построения графиков с расчетом корелляции
 """
