@@ -1,6 +1,8 @@
 from tkinter import *
 from tkinter import ttk
 
+import variables as v
+
 from tkinter.ttk import Checkbutton
 
 """
@@ -57,23 +59,19 @@ Label(tab2, text="Ввод первичных данных по градуиро
 Label(tab2, text="Введите количество анализируемых элементов", font=("Arial Bold", 10)).place(x=10, y=70)
 Label(tab2, text="Введите количество градуировочных растворов", font=("Arial Bold", 10)).place(x=10, y=100)
 
-# выпадающий список
-number = [1,2,3,4,5,6,7,8,9,10]
-
-combobox_1 = ttk.Combobox(tab2,  values=number)
+combobox_1 = ttk.Combobox(tab2,  values=v.number)
 combobox_1.place(x=340, y=70)
 combobox_1.current(1)
 
-combobox_2 = ttk.Combobox(tab2,  values=number)
+combobox_2 = ttk.Combobox(tab2,  values=v.number)
 combobox_2.place(x=340, y=100)
 combobox_2.current(3)
 
 
-# програмка для кол-ва полей n
-def pole_n():
+def pole_n_gso():
 
     """
-    програмка для кол-ва полей (в разработке)
+    програмка добавления полей заполнения во вкладку ввод данных градуировка
     """
 
     try:
@@ -98,7 +96,7 @@ def pole_n():
         globals()['lbl_el_m_d' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
         globals()['lbl_el_m_d' + str(e)].place(x=120+gap_0, y=160)
 
-        gap_0 += 70
+        gap_0 += v.gap_gor_add
 
         gap_1 = 0  # вертикальный пропуск для таблички массовой доли
 
@@ -113,7 +111,7 @@ def pole_n():
                 globals()['lbl_ent_m_d' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
                 globals()['lbl_ent_m_d' + str(e) + str(i)].place(x=50+gap_0, y=180+gap_1)
 
-            gap_1 += 23
+            gap_1 += v.gap_vert_add
 
 
     gap_0_itog_md = gap_0  # запомним размеры таблички массовой доли по горизонтали
@@ -122,11 +120,9 @@ def pole_n():
     gap_1_itog_md = gap_1  # запомним размеры таблички массовой доли по вертикали
     gap_1 = 0
 
-
     """
     табличка добавления сигнал прибора (импульсы)
     """
-
     global name_table_imp  # название таблички
     name_table_imp = Label(tab2, text="Сигнал прибора", font=("Arial Bold", 10))
     name_table_imp.place(x=gap_0_itog_md+170, y=140)  # отталкиваемся от размеров предыдущей таблички
@@ -136,7 +132,7 @@ def pole_n():
         globals()['lbl_el_imp' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
         globals()['lbl_el_imp' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=160)
 
-        gap_0 += 70
+        gap_0 += v.gap_gor_add
 
         gap_2 = 0 # новый вертикальный пропуск
 
@@ -150,16 +146,14 @@ def pole_n():
                 globals()['lbl_ent_imp' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
                 globals()['lbl_ent_imp' + str(e) + str(i)].place(x=gap_0_itog_md+180 + gap_0, y=180+gap_2)
 
-            gap_2 += 23
+            gap_2 += v.gap_vert_add
 
     gap_0 = 0
     gap_1 = 0
 
-
     """
     табличка добавления разбавления
     """
-
     global name_table_razb  # название таблички
     name_table_razb = Label(tab2, text="Разбавление", font=("Arial Bold", 10))
     name_table_razb.place(x=10, y=gap_1_itog_md + 210) # отталкиваемся от размеров предыдущей таблички
@@ -169,7 +163,7 @@ def pole_n():
         globals()['lbl_el_razb' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
         globals()['lbl_el_razb' + str(e)].place(x=120+gap_0, y=gap_1_itog_md + 230)
 
-        gap_0 += 70
+        gap_0 += v.gap_gor_add
 
         gap_3 = 0  # вертикальный пропуск
 
@@ -183,7 +177,7 @@ def pole_n():
                 globals()['lbl_ent_razb' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
                 globals()['lbl_ent_razb' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + 250+gap_3)
 
-            gap_3 += 23
+            gap_3 += v.gap_vert_add
 
     gap_3_itog_razb = gap_1_itog_md + gap_3 # запомним размеры таблички массовой доли и импульсов по вертикали
 
@@ -192,7 +186,6 @@ def pole_n():
     """
     табличка rsd
     """
-
     global name_table_rsd  #  название таблички
     name_table_rsd = Label(tab2, text="Неопределенность сигнала прибора (RSD)", font=("Arial Bold", 10))
     name_table_rsd.place(x=gap_0_itog_md+170, y=gap_1_itog_md + 210)  # отталкиваемся от размеров предыдущей таблички
@@ -202,7 +195,7 @@ def pole_n():
         globals()['lbl_el_rsd' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
         globals()['lbl_el_rsd' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=gap_1_itog_md + 230)
 
-        gap_0 += 70
+        gap_0 += v.gap_gor_add
 
         gap_3 = 0  # вертикальный пропуск для таблички массовой доли
 
@@ -216,29 +209,23 @@ def pole_n():
                 globals()['lbl_ent_rsd' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
                 globals()['lbl_ent_rsd' + str(e) + str(i)].place(x=gap_0_itog_md+180 + gap_0, y=gap_1_itog_md + 250 + gap_3)
 
-            gap_3 += 23
-
+            gap_3 += v.gap_vert_add
 
     """
     табличка растворения ГСО (перевода в пробирки)
     """
-
-
     global name_table_probirka  # название таблички
     name_table_probirka = Label(tab2, text="Растворение ГСО", font=("Arial Bold", 10))
     name_table_probirka.place(x=10, y=gap_3_itog_razb + 280)
 
     gap_6 = 0
 
-    # названия колонок
-    name_all_columns_probirka = {'m_пробирк,г', 'm_навеск,мг', 'm_итог,г'}
-
     for e in range(num_el):
 
         gap_5 = 0
         gap_3 = 0
 
-        for h in name_all_columns_probirka:
+        for h in v.name_all_columns_probirka:
             if h + str(e) not in globals():
                 globals()[h + str(e)] = Label(tab2, text=h, font=("Arial Bold", 7))
                 globals()[h + str(e)].place(x=120 + gap_6 + gap_5, y=gap_3_itog_razb + 320)
@@ -251,10 +238,10 @@ def pole_n():
                     globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)] = ttk.Entry(tab2, width=10)
                     globals()['lbl_ent_probirka' + str(e) + str(i) + str(h)].place(x=120 + gap_6 + gap_5,
                                                                      y=gap_3_itog_razb + 340 + gap_3_2)
-                gap_3_2 += 23
+                gap_3_2 += v.gap_vert_add
 
-            gap_5 += 70
-            gap_3 += 23
+            gap_5 += v.gap_gor_add
+            gap_3 += v.gap_vert_add
 
         if 'lbl_el_probirk' + str(e) not in globals():
             globals()['lbl_el_probirk' + str(e)] = Label(tab2, text=f'Растворение_элемент_{e + 1}', font=("Arial Bold", 8))
@@ -268,11 +255,11 @@ def pole_n():
                 globals()['lbl_std_probirka' + str(i)] = Label(tab2, text=f'Стандарт_{i + 1}', font=("Arial Bold", 8))
                 globals()['lbl_std_probirka' + str(i)].place(x=40 + gap_6, y=gap_3_itog_razb + 340 + gap_3)
 
-            gap_3 += 23
+            gap_3 += v.gap_vert_add
 
-        gap_6 += 250
+        gap_6 += v.gap_6_gor_add
 
-def pole_n_del():
+def pole_n_del_gso():
 
     """
     програмка для удаления  полей (в разработке)
@@ -281,63 +268,26 @@ def pole_n_del():
     # удаляем таблички
 
     name_table_mass_dol.destroy()
-
     name_table_razb.destroy()
-
     name_table_imp.destroy()
-
     name_table_rsd.destroy()
 
     # названия колонок
     name_table_probirka.destroy()
 
-    # названия колонок перевода в пробирки
-    name_all_columns_probirka = {'m_пробирк,г', 'm_навеск,мг', 'm_итог,г'}
+    tabl_del_1 = ['lbl_el_m_d', 'lbl_el_razb', 'lbl_el_imp', 'lbl_el_rsd', 'lbl_el_probirk']
 
     for e in range(10):
 
-        # удаление названия столбцов - элементов таблички массовая доля
-        if 'lbl_el_m_d' + str(e) in globals():
-            globals()['lbl_el_m_d' + str(e)].destroy()
-            try:
-                del globals()['lbl_el_m_d' + str(e)] # неясно почему c "i" работает, а с "e" нет
-            except: pass
+        for _ in tabl_del_1:
+            if _ + str(e) in globals():
+                globals()[_ + str(e)].destroy()
+                try:
+                    del globals()[_ + str(e)]
+                except:
+                    pass
 
-        # удаление названия столбцов - элементов таблички с разбавлениями
-        if 'lbl_el_razb' + str(e) in globals():
-            globals()['lbl_el_razb' + str(e)].destroy()
-            try:
-                del globals()['lbl_el_razb' + str(e)]
-            except: pass
-
-        # удаление названия столбцов - элементов таблички с импульсами
-        if 'lbl_el_imp' + str(e) in globals():
-            globals()['lbl_el_imp' + str(e)].destroy()
-            try:
-                del globals()['lbl_el_imp' + str(e)]
-            except:
-                pass
-
-        # удаление названия столбцов - элементов таблички с rsd
-        if 'lbl_el_rsd' + str(e) in globals():
-            globals()['lbl_el_rsd' + str(e)].destroy()
-            try:
-                del globals()['lbl_el_rsd' + str(e)]
-            except:
-                pass
-
-        # удаление названия минитабличек по растворению
-        if 'lbl_el_probirk' + str(e) in globals():
-            globals()['lbl_el_probirk' + str(e)].destroy()
-            try:
-                del globals()['lbl_el_probirk' + str(e)]
-            except:
-                pass
-
-
-
-        for h in name_all_columns_probirka:
-
+        for h in v.name_all_columns_probirka:
             if h + str(e) in globals():
                 globals()[h + str(e)].destroy()
                 try:
@@ -345,8 +295,7 @@ def pole_n_del():
                 except:
                     pass
 
-
-        for h in name_all_columns_probirka:
+        for h in v.name_all_columns_probirka:
 
             if 'lbl_ent_probirka' + str(e) + str(h) in globals():
                 globals()['lbl_ent_probirka' + str(e) + str(h)].destroy()
@@ -363,89 +312,35 @@ def pole_n_del():
                     except:
                         pass
 
-
+        # название всех табличек
+        tabl_del_2 = ['lbl_std_m_d','lbl_ent_m_d','lbl_std_razb','lbl_ent_razb',\
+                    'lbl_std_imp','lbl_ent_imp','lbl_std_rsd','lbl_ent_rsd','lbl_std_probirka']
 
         for i in range(10):
 
-            # удаление таблички массовая доля
-            if 'lbl_std_m_d' + str(i) in globals():
-                globals()['lbl_std_m_d' + str(i)].destroy()
-                try:
-                    del globals()['lbl_std_m_d' + str(i)]
-                except: pass
+            for _ in tabl_del_2:
 
-            if 'lbl_ent_m_d' + str(e) + str(i) in globals():
-                globals()['lbl_ent_m_d' + str(e) + str(i)].destroy()
-                try:
-                    del globals()['lbl_ent_m_d' + str(e) + str(i)]
-                except: pass
+                if _ + str(i) in globals():
+                    globals()[_ + str(i)].destroy()
+                    try:
+                        del globals()[_ + str(i)]
+                    except:
+                        pass
 
-            # удаление таблички разбавление
-            if 'lbl_std_razb' + str(i) in globals():
-                globals()['lbl_std_razb' + str(i)].destroy()
-                try:
-                    del globals()['lbl_std_razb' + str(i)]
-                except: pass
-
-            if 'lbl_ent_razb' + str(e) + str(i) in globals():
-                globals()['lbl_ent_razb' + str(e) + str(i)].destroy()
-                try:
-                    del globals()['lbl_ent_razb' + str(e) + str(i)]
-                except: pass
-
-            # удаление таблички импульсы
-            if 'lbl_std_imp' + str(i) in globals():
-                globals()['lbl_std_imp' + str(i)].destroy()
-                try:
-                    del globals()['lbl_std_imp' + str(i)]
-                except:
-                    pass
-
-            if 'lbl_ent_imp' + str(e) + str(i) in globals():
-                globals()['lbl_ent_imp' + str(e) + str(i)].destroy()
-                try:
-                    del globals()['lbl_ent_imp' + str(e) + str(i)]
-                except:
-                    pass
-
-            # удаление таблички rsd
-            if 'lbl_std_rsd' + str(i) in globals():
-                globals()['lbl_std_rsd' + str(i)].destroy()
-                try:
-                    del globals()['lbl_std_rsd' + str(i)]
-                except:
-                    pass
-
-            if 'lbl_ent_rsd' + str(e) + str(i) in globals():
-                globals()['lbl_ent_rsd' + str(e) + str(i)].destroy()
-                try:
-                    del globals()['lbl_ent_rsd' + str(e) + str(i)]
-                except:
-                    pass
-
-            # удаление таблички растворения ГСО
-
-            if 'lbl_std_probirka' + str(i) in globals():
-                globals()['lbl_std_probirka' + str(i)].destroy()
-                try:
-                    del globals()['lbl_std_probirka' + str(i)]
-                except:
-                    pass
-
-
-
-
-
+                if _ + str(e) + str(i) in globals():
+                    globals()[_ + str(e) + str(i)].destroy()
+                    try:
+                        del globals()[_ + str(e) + str(i)]
+                    except:
+                        pass
 
 
 
 # кнопка при нажатии которой вылазит таблица, которую надо заполнить
-ttk.Button(tab2, text="Заполнить", command=pole_n).place(x=510, y=85)
+ttk.Button(tab2, text="Заполнить", command=pole_n_gso).place(x=510, y=85)
 
 # кнопка удалении таблицы
-ttk.Button(tab2, text="Все удалить", command=pole_n_del).place(x=610, y=85)
-
-
+ttk.Button(tab2, text="Все удалить", command=pole_n_del_gso).place(x=610, y=85)
 
 #combobox_1.bind("<<ComboboxSelected>>", pole_n)
 
