@@ -18,3 +18,5 @@ gap_6_gor_add = 250
 """
 конец
 """
+
+name_all_columns_probirka_proba = {'m_пробирк,г', 'm_навеск,мг', 'm_итог,г'}
