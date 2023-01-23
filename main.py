@@ -103,6 +103,7 @@ def pole_n_gso():
 
         for i in range(num_std):
 
+
             # создание таблички со стандартами
             if 'lbl_std_m_d' + str(i) not in globals():
                 globals()['lbl_std_m_d' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
