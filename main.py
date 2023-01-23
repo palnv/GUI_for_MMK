@@ -131,7 +131,7 @@ def pole_n_gso():
     for e in range(num_el):
 
         globals()['lbl_el_imp' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_imp' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=160)
+        globals()['lbl_el_imp' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=160)
 
         gap_0 += v.gap_gor_add
 
@@ -172,11 +172,11 @@ def pole_n_gso():
 
             if 'lbl_std_razb' + str(i) not in globals():
                 globals()['lbl_std_razb' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
-                globals()['lbl_std_razb' + str(i)].place(x=40, y=gap_1_itog_md + 250+gap_3)
+                globals()['lbl_std_razb' + str(i)].place(x=40, y=gap_1_itog_md + v.gap_250_add+gap_3)
 
             if 'lbl_ent_razb' + str(e) + str(i) not in globals():
                 globals()['lbl_ent_razb' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
-                globals()['lbl_ent_razb' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + 250+gap_3)
+                globals()['lbl_ent_razb' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + v.gap_250_add+gap_3)
 
             gap_3 += v.gap_vert_add
 
@@ -194,7 +194,7 @@ def pole_n_gso():
     for e in range(num_el):
 
         globals()['lbl_el_rsd' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_rsd' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=gap_1_itog_md + 230)
+        globals()['lbl_el_rsd' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=gap_1_itog_md + 230)
 
         gap_0 += v.gap_gor_add
 
@@ -204,11 +204,11 @@ def pole_n_gso():
 
             if 'lbl_std_rsd' + str(i) not in globals():
                 globals()['lbl_std_rsd' + str(i)] = Label(tab2, text=f'Стандарт_{i + 1}', font=("Arial Bold", 8))
-                globals()['lbl_std_rsd' + str(i)].place(x=gap_0_itog_md+170, y=gap_1_itog_md + 250 + gap_3)
+                globals()['lbl_std_rsd' + str(i)].place(x=gap_0_itog_md+170, y=gap_1_itog_md + v.gap_250_add + gap_3)
 
             if 'lbl_ent_rsd' + str(e) + str(i) not in globals():
                 globals()['lbl_ent_rsd' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
-                globals()['lbl_ent_rsd' + str(e) + str(i)].place(x=gap_0_itog_md+180 + gap_0, y=gap_1_itog_md + 250 + gap_3)
+                globals()['lbl_ent_rsd' + str(e) + str(i)].place(x=gap_0_itog_md+180 + gap_0, y=gap_1_itog_md + v.gap_250_add + gap_3)
 
             gap_3 += v.gap_vert_add
 
@@ -258,7 +258,7 @@ def pole_n_gso():
 
             gap_3 += v.gap_vert_add
 
-        gap_6 += v.gap_6_gor_add
+        gap_6 += v.gap_250_add
 
 def pole_n_del_gso():
 
@@ -425,7 +425,7 @@ def pole_n_proba():
     for e in range(num_el):
 
         globals()['lbl_el_imp_proba' + str(e)] = Label(tab3, text=f'Проба_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_imp_proba' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=160)
+        globals()['lbl_el_imp_proba' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=160)
 
         gap_0 += v.gap_gor_add
 
@@ -466,11 +466,11 @@ def pole_n_proba():
 
             if 'lbl_std_razb_proba' + str(i) not in globals():
                 globals()['lbl_std_razb_proba' + str(i)] = Label(tab3, text=f'Проба_{i+1}', font=("Arial Bold", 8))
-                globals()['lbl_std_razb_proba' + str(i)].place(x=40, y=gap_1_itog_md + 250+gap_3)
+                globals()['lbl_std_razb_proba' + str(i)].place(x=40, y=gap_1_itog_md + v.gap_250_add+gap_3)
 
             if 'lbl_ent_razb_proba' + str(e) + str(i) not in globals():
                 globals()['lbl_ent_razb_proba' + str(e) + str(i)] = ttk.Entry(tab3, width = 10)
-                globals()['lbl_ent_razb_proba' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + 250+gap_3)
+                globals()['lbl_ent_razb_proba' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + v.gap_250_add+gap_3)
 
             gap_3 += v.gap_vert_add
 
@@ -488,7 +488,7 @@ def pole_n_proba():
     for e in range(num_el):
 
         globals()['lbl_el_rsd_proba' + str(e)] = Label(tab3, text=f'Проба_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_rsd_proba' + str(e)].place(x=gap_0_itog_md+250 + gap_0, y=gap_1_itog_md + 230)
+        globals()['lbl_el_rsd_proba' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=gap_1_itog_md + 230)
 
         gap_0 += v.gap_gor_add
 
@@ -509,50 +509,46 @@ def pole_n_proba():
     """
     табличка растворения проб (перевода в пробирки)
     """
-    global name_table_probirka_proba  # название таблички
-    name_table_probirka_proba = Label(tab3, text="Растворение проб", font=("Arial Bold", 10))
-    name_table_probirka_proba.place(x=10, y=gap_3_itog_razb + 280)
-
     gap_6 = 0
 
-    for e in range(num_el):
+    #for e in range(num_el):
 
-        gap_5 = 0
-        gap_3 = 0
+    gap_5 = 0
+    gap_3 = 0
 
-        for h in v.name_all_columns_probirka_proba:
-            if h + str(e) not in globals():
-                globals()[h + str(e)] = Label(tab3, text=h, font=("Arial Bold", 7))
-                globals()[h + str(e)].place(x=120 + gap_6 + gap_5, y=gap_3_itog_razb + 320)
+    for h in v.name_all_columns_probirka_proba:
+        if h not in globals():
+            globals()[h+'proba'] = Label(tab3, text=h, font=("Arial Bold", 7))
+            globals()[h+'proba'].place(x=120 + gap_6 + gap_5, y=gap_3_itog_razb + 320)
 
-            gap_3_2 = 0
-
-            for i in range(num_std):
-
-                if 'lbl_ent_probirka_proba' + str(e) + str(i) + str(h) not in globals():
-                    globals()['lbl_ent_probirka_proba' + str(e) + str(i) + str(h)] = ttk.Entry(tab3, width=10)
-                    globals()['lbl_ent_probirka_proba' + str(e) + str(i) + str(h)].place(x=120 + gap_6 + gap_5,
-                                                                     y=gap_3_itog_razb + 340 + gap_3_2)
-                gap_3_2 += v.gap_vert_add
-
-            gap_5 += v.gap_gor_add
-            gap_3 += v.gap_vert_add
-
-        if 'lbl_el_probirk_proba' + str(e) not in globals():
-            globals()['lbl_el_probirk_proba' + str(e)] = Label(tab3, text=f'Растворение_элемент_{e + 1}', font=("Arial Bold", 8))
-            globals()['lbl_el_probirk_proba' + str(e)].place(x=150 + gap_6, y=gap_3_itog_razb + 300)
-
-        gap_3 = 0
+        gap_3_2 = 0
 
         for i in range(num_std):
 
-            if 'lbl_std_probirka_proba' + str(i) not in globals():
-                globals()['lbl_std_probirka_proba' + str(i)] = Label(tab3, text=f'Проба_{i + 1}', font=("Arial Bold", 8))
-                globals()['lbl_std_probirka_proba' + str(i)].place(x=40 + gap_6, y=gap_3_itog_razb + 340 + gap_3)
+            if 'lbl_ent_probirka_proba' + str(i) + str(h) not in globals():
+                globals()['lbl_ent_probirka_proba' + str(i) + str(h)] = ttk.Entry(tab3, width=10)
+                globals()['lbl_ent_probirka_proba' + str(i) + str(h)].place(x=120 + gap_6 + gap_5,
+                                                                 y=gap_3_itog_razb + 340 + gap_3_2)
+            gap_3_2 += v.gap_vert_add
 
-            gap_3 += v.gap_vert_add
+        gap_5 += v.gap_gor_add
+        gap_3 += v.gap_vert_add
 
-        gap_6 += v.gap_6_gor_add
+    #if 'lbl_el_probirk_proba' not in globals():
+    globals()['lbl_el_probirk_proba'] = Label(tab3, text=f'Массы при растворении проб', font=("Arial Bold", 8))
+    globals()['lbl_el_probirk_proba'].place(x=150 + gap_6, y=gap_3_itog_razb + 300)
+
+    gap_3 = 0
+
+    for i in range(num_std):
+
+        if 'lbl_std_probirka_proba' + str(i) not in globals():
+            globals()['lbl_std_probirka_proba' + str(i)] = Label(tab3, text=f'Проба_{i + 1}', font=("Arial Bold", 8))
+            globals()['lbl_std_probirka_proba' + str(i)].place(x=40 + gap_6, y=gap_3_itog_razb + 340 + gap_3)
+
+        gap_3 += v.gap_vert_add
+
+    gap_6 += v.gap_250_add
 
 def pole_n_del_proba():
 
@@ -568,7 +564,7 @@ def pole_n_del_proba():
     name_table_rsd_proba.destroy()
 
     # названия колонок
-    name_table_probirka_proba.destroy()
+    lbl_el_probirk_proba.destroy()
 
     tabl_del_1 = ['lbl_el_pl_proba', 'lbl_el_razb_proba', 'lbl_el_imp_proba', 'lbl_el_rsd_proba', 'lbl_el_probirk_proba']
 
@@ -582,11 +578,11 @@ def pole_n_del_proba():
                 except:
                     pass
 
-        for h in v.name_all_columns_probirka:
-            if h + str(e) in globals():
-                globals()[h + str(e)].destroy()
+        for h in v.name_all_columns_probirka_proba:
+            if h + 'proba' in globals():
+                globals()[h + 'proba'].destroy()
                 try:
-                    del globals()[h + str(e)]
+                    del globals()[h + 'proba']
                 except:
                     pass
 
