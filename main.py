@@ -86,6 +86,11 @@ def tabl_n(name_p, text_name_table, text_name_str,
     gap_dop_v - дополнительный вертикальный пробел (gap_170_add = 170)
     gap_dop_g - дополнительный горизонтальный пробел (gap_170_add = 170)
     tab_n - номер вкладки куда вставляется элемент (gap_210_add = 210)
+
+    на выходе:
+    gap_0 - общая горизонтальная ширина таблицы
+    gap_1 - общая вертикальная ширина таблицы
+
     """
 
     gap_0 = 0 # горизонтальный пропуск для таблички массовой доли
@@ -132,12 +137,12 @@ def pole_n_gso():
     num_std = int(combobox_2.get())
 
     # Табличка массовой доли
-    a, b = tabl_n('m_d', "Массовая доля (%)", 'Стандарт',
+    a_1, b_1 = tabl_n('m_d', "Массовая доля (%)", 'Стандарт',
            0, 0, v.gap_gor_add, v.gap_vert_add, 140, 10,
            tab2, num_el, num_std)
 
-    gap_0_itog_md = a
-    gap_1_itog_md = b
+    gap_0_itog_md = a_1
+    gap_1_itog_md = b_1
 
     #print(gap_0_itog_md, gap_1_itog_md)
     #print(a, b)
@@ -187,10 +192,9 @@ def pole_n_gso():
 
     # Табличка сигнала прибора
     tabl_n('imp', "Сигнал прибора", 'Стандарт',
-           0, gap_0_itog_md, v.gap_gor_add, v.gap_vert_add, 140, 170,
+           0, a_1, v.gap_gor_add, v.gap_vert_add, 140, 170,
            tab2, num_el, num_std)
 
-    gap_0 = 0  # обнулим
 
     # """
     # табличка добавления сигнал прибора (импульсы)
@@ -223,69 +227,78 @@ def pole_n_gso():
     # gap_0 = 0
     # gap_1 = 0
 
-    """
-    табличка добавления разбавления
-    """
-    global name_table_razb  # название таблички
-    name_table_razb = Label(tab2, text="Разбавление", font=("Arial Bold", 10))
-    name_table_razb.place(x=10, y=gap_1_itog_md + 210) # отталкиваемся от размеров предыдущей таблички
+    # табличка добавления разбавления
+    tabl_n('razb', "Разбавление", 'Стандарт',
+           b_1, 0, v.gap_gor_add, v.gap_vert_add, 210, 10,
+           tab2, num_el, num_std)
 
-    for e in range(num_el):
 
-        globals()['lbl_el_razb' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_razb' + str(e)].place(x=120+gap_0, y=gap_1_itog_md + 230)
+    gap_0 = 0  # обнулим
+    # """
+    # табличка добавления разбавления
+    # """
+    # global name_table_razb  # название таблички
+    # name_table_razb = Label(tab2, text="Разбавление", font=("Arial Bold", 10))
+    # name_table_razb.place(x=10, y=gap_1_itog_md + 210) # отталкиваемся от размеров предыдущей таблички
+    #
+    # for e in range(num_el):
+    #
+    #     globals()['lbl_el_razb' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
+    #     globals()['lbl_el_razb' + str(e)].place(x=120+gap_0, y=gap_1_itog_md + 230)
+    #
+    #     gap_0 += v.gap_gor_add
+    #
+    #     gap_3 = 0  # вертикальный пропуск
+    #
+    #     for i in range(num_std):
+    #
+    #         if 'lbl_std_razb' + str(i) not in globals():
+    #             globals()['lbl_std_razb' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
+    #             globals()['lbl_std_razb' + str(i)].place(x=40, y=gap_1_itog_md + v.gap_250_add+gap_3)
+    #
+    #         if 'lbl_ent_razb' + str(e) + str(i) not in globals():
+    #             globals()['lbl_ent_razb' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
+    #             globals()['lbl_ent_razb' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + v.gap_250_add+gap_3)
+    #
+    #         gap_3 += v.gap_vert_add
 
-        gap_0 += v.gap_gor_add
-
-        gap_3 = 0  # вертикальный пропуск
-
-        for i in range(num_std):
-
-            if 'lbl_std_razb' + str(i) not in globals():
-                globals()['lbl_std_razb' + str(i)] = Label(tab2, text=f'Стандарт_{i+1}', font=("Arial Bold", 8))
-                globals()['lbl_std_razb' + str(i)].place(x=40, y=gap_1_itog_md + v.gap_250_add+gap_3)
-
-            if 'lbl_ent_razb' + str(e) + str(i) not in globals():
-                globals()['lbl_ent_razb' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
-                globals()['lbl_ent_razb' + str(e) + str(i)].place(x=50+gap_0, y=gap_1_itog_md + v.gap_250_add+gap_3)
-
-            gap_3 += v.gap_vert_add
-
-    gap_3_itog_razb = gap_1_itog_md + gap_3 # запомним размеры таблички массовой доли и импульсов по вертикали
+    gap_3_itog_razb = 2*gap_1_itog_md # запомним размеры таблички массовой доли и импульсов по вертикали
 
     gap_0 = 0
 
+    # Табличка сигнала rsd
+    tabl_n('rsd', "Неопределенность сигнала прибора (RSD)", 'Стандарт',
+           b_1, a_1, v.gap_gor_add, v.gap_vert_add, 210, 170,
+           tab2, num_el, num_std)
 
 
-
-
-    """
-    табличка rsd
-    """
-    global name_table_rsd  #  название таблички
-    name_table_rsd = Label(tab2, text="Неопределенность сигнала прибора (RSD)", font=("Arial Bold", 10))
-    name_table_rsd.place(x=gap_0_itog_md+v.gap_170_add, y=gap_1_itog_md + v.gap_210_add)  # отталкиваемся от размеров предыдущей таблички
-
-    for e in range(num_el):
-
-        globals()['lbl_el_rsd' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
-        globals()['lbl_el_rsd' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=gap_1_itog_md + v.gap_210_add + 20)
-
-        gap_0 += v.gap_gor_add
-
-        gap_3 = 0  # вертикальный пропуск для таблички массовой доли
-
-        for i in range(num_std):
-
-            if 'lbl_std_rsd' + str(i) not in globals():
-                globals()['lbl_std_rsd' + str(i)] = Label(tab2, text=f'Стандарт_{i + 1}', font=("Arial Bold", 8))
-                globals()['lbl_std_rsd' + str(i)].place(x=gap_0_itog_md+v.gap_170_add, y=gap_1_itog_md + v.gap_250_add + gap_3)
-
-            if 'lbl_ent_rsd' + str(e) + str(i) not in globals():
-                globals()['lbl_ent_rsd' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
-                globals()['lbl_ent_rsd' + str(e) + str(i)].place(x=gap_0_itog_md+v.gap_170_add + 10 + gap_0, y=gap_1_itog_md + v.gap_250_add + gap_3)
-
-            gap_3 += v.gap_vert_add
+    # """
+    # табличка rsd
+    # """
+    # global name_table_rsd  #  название таблички
+    # name_table_rsd = Label(tab2, text="Неопределенность сигнала прибора (RSD)", font=("Arial Bold", 10))
+    # name_table_rsd.place(x=gap_0_itog_md+v.gap_170_add, y=gap_1_itog_md + v.gap_210_add)  # отталкиваемся от размеров предыдущей таблички
+    #
+    # for e in range(num_el):
+    #
+    #     globals()['lbl_el_rsd' + str(e)] = Label(tab2, text=f'Элемент_{e + 1}', font=("Arial Bold", 8))
+    #     globals()['lbl_el_rsd' + str(e)].place(x=gap_0_itog_md+v.gap_250_add + gap_0, y=gap_1_itog_md + v.gap_210_add + 20)
+    #
+    #     gap_0 += v.gap_gor_add
+    #
+    #     gap_3 = 0  # вертикальный пропуск для таблички массовой доли
+    #
+    #     for i in range(num_std):
+    #
+    #         if 'lbl_std_rsd' + str(i) not in globals():
+    #             globals()['lbl_std_rsd' + str(i)] = Label(tab2, text=f'Стандарт_{i + 1}', font=("Arial Bold", 8))
+    #             globals()['lbl_std_rsd' + str(i)].place(x=gap_0_itog_md+v.gap_170_add, y=gap_1_itog_md + v.gap_250_add + gap_3)
+    #
+    #         if 'lbl_ent_rsd' + str(e) + str(i) not in globals():
+    #             globals()['lbl_ent_rsd' + str(e) + str(i)] = ttk.Entry(tab2, width = 10)
+    #             globals()['lbl_ent_rsd' + str(e) + str(i)].place(x=gap_0_itog_md+v.gap_170_add + 10 + gap_0, y=gap_1_itog_md + v.gap_250_add + gap_3)
+    #
+    #         gap_3 += v.gap_vert_add
 
     """
     табличка растворения ГСО (перевода в пробирки)
