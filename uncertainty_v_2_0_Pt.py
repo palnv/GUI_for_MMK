@@ -10,7 +10,8 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
-
+# добавил информацию о расположении данных в эксельке
+# нужно добавить в расчет бланк и условие или для холостой
 
 class mmk(BaseEstimator):
     """
@@ -38,7 +39,7 @@ class mmk(BaseEstimator):
         data_el = data_list.range('B5:D15').options(pd.DataFrame, index = 1).value
 
         # считываем табличку с вводными данными
-        data_param = data_list.range('B24:C32').options(pd.DataFrame, index = 1).value
+        data_param = data_list.range('B24:C33').options(pd.DataFrame, index = 1).value
 
         # удаляем пустые строки
         data_el.dropna(axis=0, inplace = True) 
@@ -499,7 +500,9 @@ class data_load(BaseEstimator):
         diap_std_liq_plotn = 'I10:N30', 
         diap_std_liq_k     = 'P10:U30',
         diap_std_liq_imp   = 'W10:AB30',
-        diap_std_liq_rsd   = 'AD10:AI30'
+        diap_std_liq_rsd   = 'AD10:AI30',
+        diap_std_liq_blank_imp = 'AK10:AP11',
+        diap_std_liq_blank_rsd = 'AK16:AP17'
                        ):
         
         """
@@ -513,6 +516,8 @@ class data_load(BaseEstimator):
         diap_std_liq_k     = 'P10:U30'    - диапазон считывания данных по степени разбавления k
         diap_std_liq_imp   = 'W10:AB30'   - диапазон считывания данных по значению импульсов
         diap_std_liq_rsd   = 'AD10:AI30'  - диапазон считывания данных по значению rsd
+        diap_std_liq_blank_imp = 'AK10:AP11' - диапазон считывания данных по импульсам бланка
+        diap_std_liq_blank_rsd = 'AK16:AP17' - диапазон считывания данных по rsd для бланка
         
         На выходе pandas табличка с данными по градуировке
         
@@ -530,10 +535,15 @@ class data_load(BaseEstimator):
         std_liq_imp = gso_liq.range(diap_std_liq_imp).options(pd.DataFrame, index = 1).value
         # значения rsd 
         std_liq_rsd = gso_liq.range(diap_std_liq_rsd).options(pd.DataFrame, index = 1).value
+        # значение импульсов по бланку
+        std_liq_blank_imp = gso_liq.range(diap_std_liq_blank_imp).options(pd.DataFrame, index = 1).value
+        # значение rsd по бланку
+        std_liq_blank_rsd = gso_liq.range(diap_std_liq_blank_rsd).options(pd.DataFrame, index = 1).value
         
         pds = pd.DataFrame(index = std_liq_gso.index)
         gso_liq_el = pds.join(std_liq_gso[e]).join(std_liq_plotn['{}_plt'.format(e)]).join(std_liq_k['{}_k'.format(e)])    \
-        .join(std_liq_imp['{}_imp'.format(e)]).join(std_liq_rsd['{}_rsd'.format(e)])
+        .join(std_liq_imp['{}_imp'.format(e)]).join(std_liq_rsd['{}_rsd'.format(e)]) \
+        .join(std_liq_blank_imp['{}_bl_imp'.format(e)]).join(std_liq_blank_rsd['{}_bl_rsd'.format(e)])
 
         gso_liq_el['soderg, ppb'] = gso_liq_el[e]*10**6/gso_liq_el['{}_plt'.format(e)]/gso_liq_el['{}_k'.format(e)]    
 
@@ -552,7 +562,9 @@ class data_load(BaseEstimator):
         diap_data_gso_imp     = 'C19:F23', 
         diap_data_gso_rsd     = 'C27:F31',
         diap_data_gso_probirk = 'C36:L40',
-        diap_data_gso_razbavl = 'C44:F48'
+        diap_data_gso_razbavl = 'C44:F48',
+        diap_data_gso_bl_imp  = 'C54:F55',
+        diap_data_gso_bl_rsd  = 'C59:E60'
                        ):
         
         """
@@ -566,6 +578,8 @@ class data_load(BaseEstimator):
         diap_data_gso_rsd     = 'C27:F31'   - диапазон считывания данных по rsd
         diap_data_gso_probirk = 'C36:L40'   - диапазон считывания данных по переводу в пробирку
         diap_data_gso_razbavl = 'C44:F48'   - диапазон считывания данных по разбавлению
+        diap_data_gso_bl_imp  = 'C54:F55'   - диапазон считывания данных по импульсам бланка
+        diap_data_gso_bl_rsd  = 'C59:E60'   - диапазон считывания данных по rsd бланка
         
         На выходе pandas табличка с данными по градуировке
         
@@ -583,8 +597,16 @@ class data_load(BaseEstimator):
         data_gso_probirk = data_gso_steel.range(diap_data_gso_probirk).options(pd.DataFrame, index = 1).value
         # разбавление
         data_gso_razbavl = data_gso_steel.range(diap_data_gso_razbavl).options(pd.DataFrame, index = 1).value
+        # импульсы бланка
+        data_gso_bl_imp = data_gso_steel.range(diap_data_gso_bl_imp).options(pd.DataFrame, index = 1).value
+        # rsd бланка
+        data_gso_bl_rsd = data_gso_steel.range(diap_data_gso_bl_rsd).options(pd.DataFrame, index = 1).value
+
         
-        gso_tabl_el = data_gso_probirk.filter(like=e).join(data_gso_imp['{}_imp'.format(e)]).join(data_gso_rsd['{}_rsd'.format(e)]).join(data_gso_conc[e]).join(data_gso_razbavl.filter(like=e), how = 'inner')
+        gso_tabl_el = data_gso_probirk.filter(like=e).join(data_gso_imp['{}_imp'.format(e)]).join(data_gso_rsd['{}_rsd'.format(e)]).join(data_gso_conc[e]).join(data_gso_razbavl.filter(like=e), how = 'inner') \
+        .join(data_gso_bl_imp['{}_bl_imp'.format(e)]).join(data_gso_bl_rsd['{}_bl_rsd'.format(e)])
+
+
         gso_tabl_el['soderg, ppb'] = (gso_tabl_el['м нав, мг {}'.format(e)]/(gso_tabl_el['м пр+р-р, г {}'.format(e)] - gso_tabl_el['м проб, г {}'.format(e)]))*1000 / \
         gso_tabl_el['разб {}'.format(e)] * gso_tabl_el[e]/100*1000    
     
