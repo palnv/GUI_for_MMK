@@ -10,8 +10,8 @@ import matplotlib.pyplot as plt
 
 from tqdm import tqdm
 
-# добавил информацию о расположении данных в эксельке
-# нужно добавить в расчет бланк и условие или для холостой
+
+# внести изменения в def choice(self) и отладить
 
 class mmk(BaseEstimator):
     """
@@ -39,7 +39,7 @@ class mmk(BaseEstimator):
         data_el = data_list.range('B5:D15').options(pd.DataFrame, index = 1).value
 
         # считываем табличку с вводными данными
-        data_param = data_list.range('B24:C33').options(pd.DataFrame, index = 1).value
+        data_param = data_list.range('B24:C34').options(pd.DataFrame, index = 1).value
 
         # удаляем пустые строки
         data_el.dropna(axis=0, inplace = True) 
@@ -240,13 +240,17 @@ class monte_carlo(BaseEstimator):
         
         
       
-    def kalibrovka_tv_rsd(self, data_kalibr_num, fit_int):
+    def kalibrovka_tv_rsd(self, data_kalibr_num, data_blank_num,  fit_int, blank_on_of):
         '''
-        однократные значения коэффициентов линейной регрессии, твердые ГСО с учетом индивидуальных RSD
+        однократные значения коэффициентов линейной регрессии, твердые ГСО с учетом индивидуальных RSD и бланка
         
         data_kalibr_num - табличка со стандартами после gso(e) или gso_cor(e) в виде numpy
+        data_blank_num - табличка с данными бланка в numpy
+
         fit_int - параметр лин.регрессии fit_intercept, False - график не идет через ноль, True - привязка к нулю,
                   по умолчанию False
+
+        blank_on_of - учитываем бланк или нет
                   
         ны выход: словарь с параметрами калибровки - A, B, corr
         расчет производится в мкг/кг  
@@ -264,16 +268,25 @@ class monte_carlo(BaseEstimator):
                 razbavlenie_1_kal = random.normalvariate(data_kalibr_num[i][6], data_kalibr_num[i][6]*self.u_razb)
                 el_proc_kal = random.normalvariate(data_kalibr_num[i][5], data_kalibr_num[i][5]*self.u_gso_steel)
 
+                impuls_blank_kal = random.normalvariate(data_blank_num[0][0], data_blank_num[0][0]*data_blank_num[0][1])
+
                 concentrac_kal =  m_naveska_kal/(m_prob_r_kal - m_probirk_kal)*1000 / razbavlenie_1_kal * el_proc_kal/100 * 1000
 
-                kalibr = np.append(kalibr, [[impuls_kal,concentrac_kal]], axis = 0)    
+                # добавим бланк
+                if blank_on_of:
+
+                    kalibr = np.append(kalibr, [[(impuls_kal - impuls_blank_kal), concentrac_kal]], axis=0)
+
+                else:
+
+                    kalibr = np.append(kalibr, [[impuls_kal,concentrac_kal]], axis = 0)
 
         # находим коэффициенты линейной регрессии
 
         x = (kalibr[:,1]).reshape(-1, 1)
         y = kalibr[:,0]
 
-        skm = lm.LinearRegression(fit_intercept = fit_int)
+        skm = lm.LinearRegression(fit_intercept=fit_int)
         skm.fit(x, y)
 
         B =  skm.coef_   
@@ -285,13 +298,17 @@ class monte_carlo(BaseEstimator):
        
         
         
-    def kalibrovka_liq_rsd(self, data_kalibr_liq, fit_int):
+    def kalibrovka_liq_rsd(self, data_kalibr_liq, data_blank_num,  fit_int, blank_on_of):
         '''
         однократные значения коэффициентов линейной регрессии, жидкие ГСО c учетом индивидуальных RSD
         
         data_kalibr_liq - табличка со стандартами после gso_liq в виде numpy
+        data_blank_num - табличка с данными бланка
         fit_int - параметр лин.регрессии fit_intercept, False - график не идет через ноль, True - привязка к нулю,
                   по умолчанию False
+
+        blank_on_of - учитываем бланк или нет
+
                   
         ны выход: словарь с параметрами калибровки - A, B, corr
         расчет производится в мкг/кг
@@ -307,9 +324,15 @@ class monte_carlo(BaseEstimator):
                 razbavlenie_kal_liq = random.normalvariate(data_kalibr_liq[i][2], data_kalibr_liq[i][2]*self.u_razb)
                 plt_kal_liq = random.normalvariate(data_kalibr_liq[i][1], data_kalibr_liq[i][1]*self.u_plt)
 
+                impuls_blank_kal_liq = random.normalvariate(data_blank_num[0][0], data_blank_num[0][0]*data_blank_num[0][1])
+
                 concentrac_kal_liq =  gso_kal_liq*10**6/plt_kal_liq/razbavlenie_kal_liq
 
-                kalibr_liq = np.append(kalibr_liq, [[impuls_kal_liq,concentrac_kal_liq]], axis = 0)    
+                if blank_on_of:
+                    kalibr_liq = np.append(kalibr_liq, [[(impuls_kal_liq-impuls_blank_kal_liq),concentrac_kal_liq]], axis = 0)
+
+                else:
+                    kalibr_liq = np.append(kalibr_liq, [[impuls_kal_liq, concentrac_kal_liq]], axis=0)
 
         # находим коэффициенты линейной регрессии
 
@@ -325,20 +348,25 @@ class monte_carlo(BaseEstimator):
         kalibrov_liq = {'A': A, 'B': B[0],  'corr': np.corrcoef(kalibr_liq[:,1], kalibr_liq[:,0])[0,1]}
 
         return kalibrov_liq
+
+
     
-    
-    
-    def mass_dol(self, v, data_prob_num, data_xol_num_i, data_kalibr, fit_int = False):     
+    def mass_dol(self, v, data_prob_num, data_blank_num, data_xol_num_i, data_kalibr, \
+                 fit_int=False, blank_on_of=True, holost_on_of=False):
     
         '''
         Однократное случайное значение массовой доли элемента в навеске c учетом индивидуальных rsd проб
         data_prob_num  - таблица с данными по пробам (numpy)
         data_xol_num_i - таблица с данными по холостым (numpy)
         data_kalibr    - таблица с данными по калибровке (numpy)
+        data_blank_num - таблица с данными по бланку (numpy)
         v - выбор варианта калибровки, если 1 - ГСО металла, 2 - ГСО жидкие
         
         fit_int - параметр лин.регрессии fit_intercept, False - график не идет через ноль, True - привязка к нулю,
                   по умолчанию False
+
+        blank_on_of - учет бланка (True/False)
+        holost_on_of - учет холостой (True/False)
                   
         на выход: словарь со значенями пробы в % и значение холостой в ppb
         
@@ -347,16 +375,16 @@ class monte_carlo(BaseEstimator):
         
         '''
 
-        # калибровочные коэффициенты
+        # калибровочные коэффициенты, ПЕРЕДЕЛАТЬ: ДВАЖДЫ ВЫЗЫВАЕТСЯ ФУНКЦИЯ РАСЧЕТА КАЛИБРОВКИ
 
         if v == 1:
-            A = self.kalibrovka_tv_rsd(data_kalibr, fit_int)['A']
-            B = self.kalibrovka_tv_rsd(data_kalibr, fit_int)['B']
+            A = self.kalibrovka_tv_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['A']
+            B = self.kalibrovka_tv_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['B']
         elif v == 2:
-            A = self.kalibrovka_liq_rsd(data_kalibr, fit_int)['A']
-            B = self.kalibrovka_liq_rsd(data_kalibr, fit_int)['B']     
+            A = self.kalibrovka_liq_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['A']
+            B = self.kalibrovka_liq_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['B']
 
-        result = np.zeros(0)
+        #result = np.zeros(0)
 
         xolost = np.zeros(0)
 
@@ -369,7 +397,13 @@ class monte_carlo(BaseEstimator):
             m_r_xol = random.normalvariate(data_xol_num_i[i][1], data_xol_num_i[i][1]*self.u_m)
             m_prob_xol = random.normalvariate(data_xol_num_i[i][0], data_xol_num_i[i][0]*self.u_m)
 
-            concentac_xol = (impuls_xol - A) / B
+            impuls_blank = random.normalvariate(data_blank_num[0][0],
+                                                        data_blank_num[0][0] * data_blank_num[0][1])
+
+            if blank_on_of:
+                concentac_xol = ((impuls_xol-impuls_blank) - A) / B
+            else:
+                concentac_xol = (impuls_xol - A) / B
 
             soderganie_xol = concentac_xol*razbavlenie_1_xol/1000*(m_r_xol - m_prob_xol)
 
@@ -386,18 +420,30 @@ class monte_carlo(BaseEstimator):
         m_prob_prob = random.normalvariate(data_prob_num[1], data_prob_num[1]*self.u_m)
         m_r_prob = random.normalvariate(data_prob_num[2], data_prob_num[2]*self.u_m)
 
-        concentac_prob = (impuls_prob - A) / B
+        impuls_blank = random.normalvariate(data_blank_num[0][0],
+                                                    data_blank_num[0][0] * data_blank_num[0][1])
 
-        # содержание с учетом холостой пробы (всего в растворе)
-        soderganie_prob = ((concentac_prob*razbavlenie_1_prob/1000*(m_r_prob - m_prob_prob)) - np.mean(xolost))/ \
+        # учет бланка
+        if blank_on_of:
+            concentac_prob = ((impuls_prob-impuls_blank) - A) / B
+        else:
+            concentac_prob = (impuls_prob - A) / B
+
+        # учет холостой
+        if holost_on_of:
+            soderganie_prob = ((concentac_prob*razbavlenie_1_prob/1000*(m_r_prob - m_prob_prob)) - np.mean(xolost))/ \
                             1000/m_naveska_prob*100
+        else:
+            soderganie_prob = (concentac_prob * razbavlenie_1_prob / 1000 * (m_r_prob - m_prob_prob)) / \
+                            1000 / m_naveska_prob * 100
         
         itog = {'sod': soderganie_prob, 'hol': np.mean(xolost)}
 
         return itog
 
 
-    def mass_dol_r(self, v, data_prob_num, data_xol_num_i, data_kalibr, с = 1, fit_int = False):     
+    def mass_dol_r(self, v, data_prob_num, data_blank_num, data_xol_num_i, data_kalibr, с = 1, \
+                   fit_int=False, blank_on_of=True, holost_on_of=False):
 
         '''
         Однократное случайное значение массовой доли элемента в растворе в мг либо мкг/кг 
@@ -412,6 +458,9 @@ class monte_carlo(BaseEstimator):
         fit_int - параметр лин.регрессии fit_intercept, False - график не идет через ноль, True - привязка к нулю,
                   по умолчанию False
 
+        blank_on_of - учет бланка (True/False)
+        holost_on_of - учет холостой (True/False)
+
         на выход: словарь со значенями пробы в ppb и значение холостой в ppb
         
         промежуточные расчеты и калибровка в ppb
@@ -422,13 +471,13 @@ class monte_carlo(BaseEstimator):
         # калибровочные коэффициенты (расчет в мкг/кг)
 
         if v == 1:
-            A = self.kalibrovka_tv_rsd(data_kalibr, fit_int)['A']
-            B = self.kalibrovka_tv_rsd(data_kalibr, fit_int)['B']
+            A = self.kalibrovka_tv_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['A']
+            B = self.kalibrovka_tv_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['B']
         elif v == 2:
-            A = self.kalibrovka_liq_rsd(data_kalibr, fit_int)['A']
-            B = self.kalibrovka_liq_rsd(data_kalibr, fit_int)['B']     
+            A = self.kalibrovka_liq_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['A']
+            B = self.kalibrovka_liq_rsd(data_kalibr, data_blank_num, fit_int, blank_on_of)['B']
 
-        result = np.zeros(0)
+        #result = np.zeros(0)
 
         xolost = np.zeros(0)
 
@@ -440,7 +489,13 @@ class monte_carlo(BaseEstimator):
             plt_xol = random.normalvariate(data_xol_num_i[i][1], data_xol_num_i[i][1]*self.u_plt)
             razbavlenie_xol = random.normalvariate(data_xol_num_i[i][2], data_xol_num_i[i][2]*self.u_razb)
 
-            concentac_xol = (impuls_xol - A) / B
+            impuls_blank = random.normalvariate(data_blank_num[0][0],
+                                                data_blank_num[0][0] * data_blank_num[0][1])
+
+            if blank_on_of:
+                concentac_xol = ((impuls_xol-impuls_blank) - A) / B
+            else:
+                concentac_xol = (impuls_xol - A) / B
 
             soderganie_xol = concentac_xol*plt_xol*razbavlenie_xol
 
@@ -455,11 +510,20 @@ class monte_carlo(BaseEstimator):
         plt_prob = random.normalvariate(data_prob_num[1], data_prob_num[1]*self.u_plt)
         razbavlenie_prob = random.normalvariate(data_prob_num[2], data_prob_num[2]*self.u_razb)
 
+        impuls_blank = random.normalvariate(data_blank_num[0][0],
+                                            data_blank_num[0][0] * data_blank_num[0][1])
 
-        concentac_prob = (impuls_prob - A) / B
+        # учет бланка
+        if blank_on_of:
+            concentac_prob = ((impuls_prob-impuls_blank) - A) / B
+        else:
+            concentac_prob = (impuls_prob - A) / B
 
-        # содержание с учетом холостой пробы (всего в растворе)
-        soderganie_prob = (concentac_prob*plt_prob*razbavlenie_prob - np.mean(xolost))/с
+        # учет холостой
+        if holost_on_of:
+            soderganie_prob = (concentac_prob * plt_prob * razbavlenie_prob - np.mean(xolost)) / с
+        else:
+            soderganie_prob = (concentac_prob * plt_prob * razbavlenie_prob) / с
 
         itog = {'sod': soderganie_prob, 'hol': np.mean(xolost)}
 
@@ -507,6 +571,7 @@ class data_load(BaseEstimator):
         
         """
         Функция загрузки и обработки данных по жидким ГСО: по умолчанию на 5 элементов по 4 град. р-ра
+        + данные бланка
         
         e - элемент
         
@@ -542,15 +607,17 @@ class data_load(BaseEstimator):
         
         pds = pd.DataFrame(index = std_liq_gso.index)
         gso_liq_el = pds.join(std_liq_gso[e]).join(std_liq_plotn['{}_plt'.format(e)]).join(std_liq_k['{}_k'.format(e)])    \
-        .join(std_liq_imp['{}_imp'.format(e)]).join(std_liq_rsd['{}_rsd'.format(e)]) \
-        .join(std_liq_blank_imp['{}_bl_imp'.format(e)]).join(std_liq_blank_rsd['{}_bl_rsd'.format(e)])
+        .join(std_liq_imp['{}_imp'.format(e)]).join(std_liq_rsd['{}_rsd'.format(e)])
+
+        gso_liq_el_bl = std_liq_blank_imp.filter(like=e).join(std_liq_blank_rsd.filter(like=e))
 
         gso_liq_el['soderg, ppb'] = gso_liq_el[e]*10**6/gso_liq_el['{}_plt'.format(e)]/gso_liq_el['{}_k'.format(e)]    
 
-        gso_liq_el.dropna(axis=0, inplace = True)  
+        gso_liq_el.dropna(axis=0, inplace = True)
+
+        itog_liq_gso = {'gso': gso_liq_el, 'blank': gso_liq_el_bl}
         
-        
-        return gso_liq_el
+        return itog_liq_gso
         
     
     def import_tv_gso  (
@@ -568,7 +635,8 @@ class data_load(BaseEstimator):
                        ):
         
         """
-        Функция загрузки и обработки данных по твердым ГСО: по умолчанию на 3 элемента и 4 град. р-ра 
+        Функция загрузки и обработки данных по твердым ГСО: по умолчанию на 3 элемента и 4 град. р-ра
+        + данные бланка
       
         e - элемент 
         
@@ -603,16 +671,19 @@ class data_load(BaseEstimator):
         data_gso_bl_rsd = data_gso_steel.range(diap_data_gso_bl_rsd).options(pd.DataFrame, index = 1).value
 
         
-        gso_tabl_el = data_gso_probirk.filter(like=e).join(data_gso_imp['{}_imp'.format(e)]).join(data_gso_rsd['{}_rsd'.format(e)]).join(data_gso_conc[e]).join(data_gso_razbavl.filter(like=e), how = 'inner') \
-        .join(data_gso_bl_imp['{}_bl_imp'.format(e)]).join(data_gso_bl_rsd['{}_bl_rsd'.format(e)])
+        gso_tabl_el = data_gso_probirk.filter(like=e).join(data_gso_imp['{}_imp'.format(e)]).join(data_gso_rsd['{}_rsd'.format(e)]).join(data_gso_conc[e]).join(data_gso_razbavl.filter(like=e), how = 'inner')
+
+        data_gso_bl = data_gso_bl_imp.filter(like=e).join(data_gso_bl_rsd.filter(like=e))
 
 
         gso_tabl_el['soderg, ppb'] = (gso_tabl_el['м нав, мг {}'.format(e)]/(gso_tabl_el['м пр+р-р, г {}'.format(e)] - gso_tabl_el['м проб, г {}'.format(e)]))*1000 / \
         gso_tabl_el['разб {}'.format(e)] * gso_tabl_el[e]/100*1000    
     
-        gso_tabl_el.dropna(axis=0, inplace = True)   
+        gso_tabl_el.dropna(axis=0, inplace = True)
+
+        gso_tabl_itog = {'gso': gso_tabl_el, 'blank': data_gso_bl}
         
-        return gso_tabl_el
+        return gso_tabl_itog
     
             
     
